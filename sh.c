@@ -61,15 +61,18 @@ runcmd(struct cmd *cmd)
     ecmd = (struct execcmd*)cmd;
     if(ecmd->argv[0] == 0)
       _exit(0);
-	if(execvp(ecmd->argv[0], ecmd->argv) == -1)
-	  perror("exec error");
+	  if(execvp(ecmd->argv[0], ecmd->argv) == -1)
+	    perror("exec error\n");
     break;
 
   case '>':
   case '<':
     rcmd = (struct redircmd*)cmd;
-    fprintf(stderr, "redir not implemented\n");
     // Your code here ...
+    close(rcmd->fd);
+	  int fd = open(rcmd->file, rcmd->flags, 0664);
+    if(fd < 0)
+      perror("file open error\n");
     runcmd(rcmd->cmd);
     break;
 
